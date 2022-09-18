@@ -1,0 +1,52 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DataLayer.DomainModels.MoneyTransferGroup
+{
+    [Table("Income", Schema = "moneytransfer")]
+    public class Income : MoneyTransfer
+    {
+        public ICollection<IncomeDetail> IncomeDetails { get; set; } = new List<IncomeDetail>();
+    }
+}
+
+
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DataLayer.DomainModels.MoneyTransferGroup
+{
+    [Table("IncomeDetail", Schema = "moneytransfer")]
+    public class IncomeDetail : BaseModel
+    {
+        public uint IncomeId { get; set; }
+        public Income Income { get; set; } = null!;
+
+        public float Amount { get; set; }
+
+        [StringLength(5)]
+        public string Currency { get; set; } = null!;
+
+        public float? AmountConverted { get; set; }
+
+        public float? ExchangeRate { get; set; }
+    }
+}
+
+using DataLayer.DomainModels.UserGroup;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DataLayer.DomainModels.MoneyTransferGroup
+{
+    [Table("MoneyTransfer", Schema = "moneytransfer")]
+    public class MoneyTransfer : BaseModel
+    {
+        public uint UserTransactionCategoryId { get; set; }
+        public UserMoneyTransferCategory UserTransactionCategory { get; set; } = null!;
+
+        public DateTime DateTime { get; set; }
+
+        [StringLength(500)]
+        public string? Description { get; set; }
+    }
+}
