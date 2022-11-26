@@ -7,6 +7,7 @@ namespace DataLayer.DomainModels.UserGroup
     [Table("Role", Schema = "user")]
     public class Role : BaseModel
     {
+        [Required]
         [StringLength(40)]
         public string Name { get; set; } = null!;
 

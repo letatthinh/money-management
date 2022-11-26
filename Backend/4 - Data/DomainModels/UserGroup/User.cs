@@ -1,6 +1,5 @@
 ﻿using DataLayer.DomainModels.Abstracts;
 using DataLayer.DomainModels.ContactGroup;
-using DataLayer.DomainModels.TransactionGroup;
 using DataLayer.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,6 +12,9 @@ namespace DataLayer.DomainModels.UserGroup
         [StringLength(20)]
         public string UserName { get; set; } = null!;
 
+        [StringLength(50)]
+        public string Password { get; set; } = null!;
+
         public UserStatus Status { get; set; } = UserStatus.Active;
 
         [StringLength(20)]
@@ -24,7 +26,7 @@ namespace DataLayer.DomainModels.UserGroup
         [StringLength(20)]
         public string LastName { get; set; } = null!;
 
-        public DateOnly? Birthday { get; set; }
+        public DateOnly Birthday { get; set; }
 
         public ICollection<UserEmail>? Emails { get; set; } = new List<UserEmail>();
 

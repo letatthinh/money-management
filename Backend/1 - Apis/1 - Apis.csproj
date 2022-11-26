@@ -5,16 +5,11 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>ApiLayer</RootNamespace>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Common\" />
-    <Folder Include="Controllers\" />
-    <Folder Include="DataTransferObjects\" />
   </ItemGroup>
 
   <ItemGroup>
