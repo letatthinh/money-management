@@ -1,6 +1,4 @@
-﻿using Common.CustomJsonConverters;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ApiLayer.DataTransferObjects.UserGroup
 {
@@ -31,6 +29,13 @@ namespace ApiLayer.DataTransferObjects.UserGroup
         public string Password { get; set; } = null!;
 
         /// <summary>
+        /// User's display name.
+        /// </summary>
+        [Required(ErrorMessage = "User's display name is required")]
+        [StringLength(60, ErrorMessage = "User's display name must not exceed 60 characters")]
+        public string DisplayName { get; set; } = null!;
+
+        /// <summary>
         /// User's first name.
         /// </summary>
         [Required(ErrorMessage = "User's first name is required")]
@@ -54,10 +59,16 @@ namespace ApiLayer.DataTransferObjects.UserGroup
         /// User's birthday.
         /// </summary>
         [Required(ErrorMessage = "User's birthday is required. Correct format is yyyy-mm-dd")]
-        [DisplayFormat(DataFormatString = "yyyy-mm-dd")]
+        [DataType(DataType.Date)]
         public DateOnly Birthday { get; set; }
 
-        //public ICollection<UserEmail>? Emails { get; set; } = new List<UserEmail>();
+        /// <summary>
+        /// User's email. The email must be verified at signing up step.
+        /// </summary>
+        [Required(ErrorMessage = "User's email is required")]
+        [StringLength(320, ErrorMessage = "User's email must not exceed 320 characters")]
+        [RegularExpression(@"[\w-.]+@(\w+-*\.)+[\w-]+", ErrorMessage = "User's email has wrong.")]
+        public string Email { get; set; } = null!;
 
         //public ICollection<UserRoles> UserRoles { get; set; } = new List<UserRoles>();
     }

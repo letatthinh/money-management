@@ -17,6 +17,9 @@ namespace DataLayer.DomainModels.UserGroup
 
         public UserStatus Status { get; set; } = UserStatus.Active;
 
+        [StringLength(60)]
+        public string DisplayName { get; set; } = null!;
+
         [StringLength(20)]
         public string FirstName { get; set; } = null!;
 
