@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace ApiLayer.Controllers
 {
@@ -26,11 +27,37 @@ namespace ApiLayer.Controllers
         /// <returns>True when the user has been created successfully.</returns>
         /// <response code="200">The user has been created successfully.</response>
         [HttpPost]
-        public async Task<ActionResult<bool>> CreateAsync([FromBody] CreateUserDto createUserDto)
+        public async Task<ActionResult<string?>> CreateAsync([FromBody] CreateUserDto createUserDto)
         {
             User u = new User();
             u.UserName = "";
-            return true;
+            /* Create token */
+            var key = "Ld^d753GmWU86HFk";
+            var _issuer = "acackt!x0V7^K64915VveXJo3rOk^sQ0LZCjLFcQ";
+            var _audience = "5vkskuA#S!OX4^wC#H3cW2mhgI48qpT3$TI1weeh";
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            
+            var claims = new List<Claim>()
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, createUserDto.UserName),
+                //new Claim(JwtRegisteredClaimNames.Email, createUserDto.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("Password", createUserDto.Password),                
+            };
+
+            var roles = new List<string>() { "A", "B" };
+            roles.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x)));
+
+            var token = new JwtSecurityToken(
+                issuer: _issuer,
+                audience: _audience,
+                claims,
+                expires: DateTime.UtcNow.AddMinutes(30),
+                signingCredentials: credentials);
+
+            var encodeToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return encodeToken;
         }
 
         /// <summary>
@@ -39,8 +66,7 @@ namespace ApiLayer.Controllers
         /// <param name="createUserDto">The DTO for creating new user.</param>
         /// <returns>True when the user has been created successfully.</returns>
         /// <response code="200">The user has been created successfully.</response>
-        [HttpPost("aa")]
-        public async Task<ActionResult<string>> CreateasdasdAsync([FromBody] CreateUserDto createUserDto)
+        private async Task<ActionResult<string>> CreateasdasdAsync([FromBody] CreateUserDto createUserDto)
         {
             /* Hash the password */
             User user = new User
@@ -84,11 +110,11 @@ namespace ApiLayer.Controllers
             return encodeToken;
         }
 
-        [Authorize]
-        [HttpGet]
+        [Authorize(Roles = "B")]
+        [HttpGet("numbers")]
         public async Task<ActionResult<List<int>>> GetNumbers()
         {
-            return new List<int>() { 1 };
+            return new List<int>() { 1, 2, 3, 4, 5 };
         }
     }
 }

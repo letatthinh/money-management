@@ -4,11 +4,17 @@ import axios from 'axios';
 function testPost() {
 
   const article = {
-    userName: 'asdsadasd',
-    password: 'aaaBBB1/',
+	userName: "letatthinh",
+	password: "T@eath1nh",
+	displayName: "Trasonz",
+	firstName: "Thinh",
+	middleName: "Tat",
+	lastName: "Le",
+	birthday: "1997-02-15",
+	email: "letatthinh.1997@gmail.com"
   };
     axios.post('https://localhost:7039/api/users', article)
-        .then(response => console.log(response));
+        .then(response => console.log(response.data));
 }
 
 function App() {

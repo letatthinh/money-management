@@ -6,6 +6,18 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyAllowedOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 // Add services to the container.
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -13,31 +25,15 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
     });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = "Hello issuer 2",
-            ValidAudience = "Hello issuer 2",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Hello key, this should be 128 bits for endcrypt")),
-        };
-    });
 
-// Register the Swagger services
-builder.Services.AddSwaggerDocument(configure =>
+builder.Services.AddOpenApiDocument(configure =>
 {
     configure.PostProcess = document =>
     {
         document.Info.Version = "v1";
         document.Info.Title = "Money management API";
         document.Info.Description = "Manage the money";
-        document.Info.TermsOfService = "None";
+        document.Info.TermsOfService = "https://www.facebook.com/";
         document.Info.Contact = new NSwag.OpenApiContact
         {
             Name = "Thinh Le",
@@ -50,28 +46,30 @@ builder.Services.AddSwaggerDocument(configure =>
             Url = "https://mit-license.org/"
         };
     };
-    configure.AddSecurity(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme()
+    configure.AddSecurity("Authorization", Enumerable.Empty<string>(), new OpenApiSecurityScheme
     {
+        Type = OpenApiSecuritySchemeType.Http,
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        Name = "Authorization",
+        Description = "To authorize, type: Bearer <token>",
+        BearerFormat = "JWT",
         In = OpenApiSecurityApiKeyLocation.Header,
-        Name = "Api key authentication",
-        Description = "Bearer {token}",
-        Type = OpenApiSecuritySchemeType.ApiKey,
-        BearerFormat = "Jwt",
-        Scheme = "Bearer"
     });
 });
 
-// Temp
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://localhost:3000",
-                                              "http://www.contoso.com");
-                      });
-});
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = "acackt!x0V7^K64915VveXJo3rOk^sQ0LZCjLFcQ", // Money management front-end application (hashed MD5)
+            ValidateIssuer = true,
+            ValidAudience = "5vkskuA#S!OX4^wC#H3cW2mhgI48qpT3$TI1weeh", // Money management back-end application
+            ValidateAudience = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Ld^d753GmWU86HFk")),
+            ValidateIssuerSigningKey = true,
+        };
+    });
 
 var app = builder.Build();
 
@@ -82,10 +80,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUi3();
 }
 
-app.UseHttpsRedirection();
+app.UseCors("MyAllowedOrigins");
 
-// Temp
-app.UseCors(MyAllowSpecificOrigins);
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
