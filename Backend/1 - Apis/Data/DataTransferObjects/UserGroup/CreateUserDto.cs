@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ApiLayer.DataTransferObjects.UserGroup
+namespace ApiLayer.Data.DataTransferObjects.UserGroup
 {
     /// <summary>
     /// DTO for creating a new user.

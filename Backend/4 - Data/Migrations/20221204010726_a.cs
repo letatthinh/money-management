@@ -43,10 +43,11 @@ namespace DataLayer.Migrations
                     UserName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     MiddleName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Birthday = table.Column<DateTime>(type: "date", nullable: true)
+                    Birthday = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {

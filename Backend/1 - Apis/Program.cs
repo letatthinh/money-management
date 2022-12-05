@@ -26,6 +26,7 @@ builder.Services.AddControllers()
     });
 builder.Services.AddEndpointsApiExplorer();
 
+// Add configuration to Swagger
 builder.Services.AddOpenApiDocument(configure =>
 {
     configure.PostProcess = document =>
@@ -57,6 +58,7 @@ builder.Services.AddOpenApiDocument(configure =>
     });
 });
 
+// For authorization
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -70,6 +72,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
         };
     });
+
+// To read data from JWT
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
